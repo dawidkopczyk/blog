@@ -88,7 +88,7 @@ def evaluate(params, X, y):
     
     # Initilize instance of estimator
     est = LGBMRegressor(boosting='gbdt', n_jobs=-1, random_state=2018)
-    
+        
     # Set params
     est.set_params(**params)
     
@@ -143,13 +143,20 @@ print("R2 SCORE ON TEST DATA: {}".format(score))
 #==============================================================================
 # Tree structure of hyperparameter space (Optional)
 #============================================================================== 
-# You must change the evalute function in order to extract learning rate 
-# and n_estimators
+# You must change the evaluate function in order to extract learning rate 
+# and n_estimators from choices. Please add the following code to the start of 
+# evaluate function
+#    # Choices
+#    if 'choices' in params.keys():
+#        params['learning_rate'] = params['choices']['learning_rate']
+#        params['n_estimators'] = params['choices']['n_estimators']
+#        params.pop('choices')
+
 hyper_space_tree = {'choices': hp.choice('choices', [
                                 {'learning_rate': 0.01, 
-                                 'n_estimators': hp.randint('n_estimators', 1500)},
+                                 'n_estimators': hp.randint('n_estimators_small_lr', 1500)},
                                 {'learning_rate': 0.1, 
-                                 'n_estimators': 1000 + hp.randint('n_estimators', 1500)}
+                                 'n_estimators': 1000 + hp.randint('n_estimators_medium_lr', 1500)}
                                 ]),
                     'max_depth':  hp.choice('max_depth', [4, 5, 8, -1]),
                     'num_leaves': hp.choice('num_leaves', [15, 31, 63, 127]),
